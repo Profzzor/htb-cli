@@ -92,7 +92,7 @@ class HTBClient:
         self.console.print(tbl)
 
         # Print description below
-        desc = info.get("info_status", "").strip()
+        desc = (info.get("info_status") or "").strip()
         if desc:
             self.console.print(f"\n[bold green]Desc:[/bold green] {desc}")
 
