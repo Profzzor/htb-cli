@@ -126,7 +126,7 @@ class HTBClient:
             self.console.print(f"[bold]Description:[/bold] {t.get('description', '-').strip()}")
             self.console.print(f"[bold]Flag:[/bold] {t.get('flag', '-')}")
             self.console.print(f"[bold]Masked Flag:[/bold] {t.get('masked_flag', '-')}")
-            self.console.print(f"[bold]Hint:[/bold] {t.get('hint', '-').strip()}")
+            self.console.print(f"[bold]Hint:[/bold] {(t.get('hint') or '-' ).strip()}")
             self.console.print(f"[bold]Completed:[/bold] {'True' if t.get('completed') else 'False'}")
             self.console.print("-" * 50)
 
