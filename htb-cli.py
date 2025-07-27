@@ -172,7 +172,7 @@ class HTBClient:
             elif "incorrect" in msg.lower():
                 self.console.print(f"[red] Incorrect flag for Task {t_id}[/red]")
             else:
-                self.console.print(f"[blue]ℹ️ Response: {msg}[/blue]")
+                self.console.print(f"[blue] Response: {msg}[/blue]")
         else:
             self.console.print(f"[red]Failed to submit flag for Sherlock {s_id}, Task {t_id}[/red]")
 
@@ -192,7 +192,7 @@ class HTBClient:
 
         self.console.print(tbl)
 
-        desc = m.get("info_status", "").strip()
+        desc = (m.get("info_status") or "").strip()
         if desc:
             self.console.print(f"\n[bold green]Desc:[/bold green] {desc}")
 
