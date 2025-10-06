@@ -11,13 +11,22 @@ from dotenv import load_dotenv
 from pathlib import Path
 
 # Load .env from script directory
-load_dotenv(dotenv_path=Path(__file__).parent / ".env")
+#load_dotenv(dotenv_path=Path(__file__).parent / ".env")
+#load_dotenv("/opt/tools/.env")
+
+with open("/opt/tools/.env", 'r') as t:
+    for line in t:
+        if line.strip().startswith("token="):
+            token = line.strip().split("=", 1)[1]
+            break
+    else:
+        raise ValueError("Token not found in /opt/tools/.env")
 
 # Disable HTTPS warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Get API token
-token = os.getenv("token")
+#token = os.getenv("token")
 if not token:
     raise ValueError("Token not found (check .env or $token)")
 
@@ -210,6 +219,23 @@ class HTBClient:
     def terminate_machine(self, mid):
         self._post("vm/terminate", {"machine_id": mid})
         self.console.print(f"[red]Terminated {mid}[/red]")
+        
+    def submit_flag(self, mid, flag):
+        """Submit a flag for a machine using API v5."""
+        url = "https://labs.hackthebox.com/api/v5/machine/own"
+        data = {"id": mid, "flag": flag}
+
+        try:
+            r = requests.post(url, headers=headers, json=data, verify=False, proxies=proxy)
+            r.raise_for_status()
+            resp = r.json()
+            msg = resp.get("message", "")
+            if resp.get("success"):
+                self.console.print(f"[green]✅ Flag submitted successfully for machine {mid}[/green]")
+            else:
+                self.console.print(f"[red]❌ Failed to submit flag for machine {mid}: {msg}[/red]")
+        except Exception as e:
+            self.console.print(f"[red]POST /machine/own failed: {e}[/red]")
 
     def submit_flag_release(self, mid, flag):
         self._post("arena/own", {"id": mid, "flag": flag})
@@ -282,7 +308,9 @@ def main():
                 case "spawn"|"s":
                     h.spawn_machine(m["id"])
                     time.sleep(0.1)
-                    h.print_release_machine(m)
+                    res = h._get("season/machine/active") or {}
+				            mm = res.get("data")
+                    h.print_release_machine(mm)
                 case "terminate"|"t":
                     h.terminate_machine(m["id"])
                 case "reset"|"re":
@@ -302,7 +330,6 @@ def main():
 
         case _:
             p.print_help()
-
-
+            
 if __name__ == "__main__":
     main()
