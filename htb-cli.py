@@ -12,15 +12,15 @@ from pathlib import Path
 
 # Load .env from script directory
 #load_dotenv(dotenv_path=Path(__file__).parent / ".env")
-#load_dotenv("/opt/tools/.env")
+#load_dotenv("/opt/htb-cli/.env")
 
-with open("/opt/tools/.env", 'r') as t:
+with open("/opt/htb-cli/.env", 'r') as t:
     for line in t:
         if line.strip().startswith("token="):
             token = line.strip().split("=", 1)[1]
             break
     else:
-        raise ValueError("Token not found in /opt/tools/.env")
+        raise ValueError("Token not found in /opt/htb-cli/.env")
 
 # Disable HTTPS warnings
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -231,9 +231,9 @@ class HTBClient:
             resp = r.json()
             msg = resp.get("message", "")
             if resp.get("success"):
-                self.console.print(f"[green]✅ Flag submitted successfully for machine {mid}[/green]")
+                self.console.print(f"[green] Flag submitted successfully for machine {mid}[/green]")
             else:
-                self.console.print(f"[red]❌ Failed to submit flag for machine {mid}: {msg}[/red]")
+                self.console.print(f"[red] Failed to submit flag for machine {mid}: {msg}[/red]")
         except Exception as e:
             self.console.print(f"[red]POST /machine/own failed: {e}[/red]")
 
@@ -309,7 +309,7 @@ def main():
                     h.spawn_machine(m["id"])
                     time.sleep(0.1)
                     res = h._get("season/machine/active") or {}
-				            mm = res.get("data")
+                    mm = res.get("data")
                     h.print_release_machine(mm)
                 case "terminate"|"t":
                     h.terminate_machine(m["id"])
@@ -327,7 +327,6 @@ def main():
             h.terminate_machine(args.id)
         case "flag"|"f":
             h.submit_flag(args.id, args.flag)
-
         case _:
             p.print_help()
             
