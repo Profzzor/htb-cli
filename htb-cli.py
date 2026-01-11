@@ -226,7 +226,7 @@ class HTBClient:
         data = {"id": mid, "flag": flag}
 
         try:
-            r = requests.post(url, headers=headers, json=data, verify=False, proxies=proxy)
+            r = requests.post(url, headers=headers, json=data, verify=False)
             r.raise_for_status()
             resp = r.json()
             msg = resp.get("message", "")
